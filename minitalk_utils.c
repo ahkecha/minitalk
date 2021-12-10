@@ -6,23 +6,88 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:51 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/07 12:12:10 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/09 14:26:14 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-void	ft_putchar(char c, int fd)
+void	ft_putchar_fd(char c, int fd)
 {
 	write(fd, &c, 1);
 }
 
+void	shift_that_char(char byte, int pid)
+{
+	int	shift;
+    int	res;
+    int	bit;
+
+	shift = 0;
+	while (shift < 7)
+	{
+		bit = ((unsigned char )byte << shift) & 1;
+		if (bit == 1)
+			res = kill(pid, SIGUSR1);
+		else
+			res = kill(pid, SIGUSR2);
+		shift++;
+		if (res == -1)
+		{
+			ft_putendl(SRV_PIDERR);
+			exit(EXIT_FAILURE);
+		}
+		usleep(100);
+	}
+}
+
+
+// void	shift_that_char(int byte, int pid)
+// {
+// 	int res;
+// 	int i;
+// 	int rem;
+// 	int sig;
+
+// 	res = 0;
+// 	i = 0;
+
+// 	while(byte > 0)
+// 	{
+// 		rem = byte % 2;
+// 		res = res + (i * rem);
+// 		byte = byte / 2;
+// 		i = i * 10;
+// 	}
+// 	if (res == 0)
+// 		sig = kill(pid, SIGUSR1);
+// 	else if (res == -1)
+// 	{
+// 		ft_putendl(SRV_PIDERR);
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	else if(res == 1)
+// 		sig = kill(pid, SIGUSR2);
+// 	usleep(100);
+// }
+
+void	_send(char *message, int pid)
+{
+	int	i;
+
+    i = 0;
+    while (message[i] != '\0')
+    {
+		shift_that_char(message[i], pid);
+		i++;
+    }
+}
 void	ft_putstr(char *str)
 {
 	if (!str)
 		return ;
-	while (*str);
-		write(1, str++, 1)
+	while (*str)
+		write(1, str++, 1);
 }
 
 int		ft_atoi(const char *str)
@@ -74,4 +139,10 @@ void	ft_putnbr_fd(int n, int fd)
 		else
 			ft_putchar_fd((nb + '0'), fd);
 	}
+}
+
+void	ft_putendl(char *str)
+{
+	ft_putstr(str);
+	ft_putchar_fd('\n', 1);
 }
