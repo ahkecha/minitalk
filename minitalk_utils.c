@@ -6,7 +6,7 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:51 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/09 14:26:14 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/20 11:34:12 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,59 +17,22 @@ void	ft_putchar_fd(char c, int fd)
 	write(fd, &c, 1);
 }
 
-void	shift_that_char(char byte, int pid)
+void	shift(char c, int pid)
 {
-	int	shift;
-    int	res;
-    int	bit;
+	int	bit;
 
-	shift = 0;
-	while (shift < 7)
+	bit = 0;
+	while (bit < 8)
 	{
-		bit = ((unsigned char )byte << shift) & 1;
-		if (bit == 1)
-			res = kill(pid, SIGUSR1);
+		if (c & 128)
+			kill(pid, SIGUSR2);
 		else
-			res = kill(pid, SIGUSR2);
-		shift++;
-		if (res == -1)
-		{
-			ft_putendl(SRV_PIDERR);
-			exit(EXIT_FAILURE);
-		}
+			kill(pid, SIGUSR1);
+		c <<= 1;
+		bit++;
 		usleep(100);
 	}
 }
-
-
-// void	shift_that_char(int byte, int pid)
-// {
-// 	int res;
-// 	int i;
-// 	int rem;
-// 	int sig;
-
-// 	res = 0;
-// 	i = 0;
-
-// 	while(byte > 0)
-// 	{
-// 		rem = byte % 2;
-// 		res = res + (i * rem);
-// 		byte = byte / 2;
-// 		i = i * 10;
-// 	}
-// 	if (res == 0)
-// 		sig = kill(pid, SIGUSR1);
-// 	else if (res == -1)
-// 	{
-// 		ft_putendl(SRV_PIDERR);
-// 		exit(EXIT_FAILURE);
-// 	}
-// 	else if(res == 1)
-// 		sig = kill(pid, SIGUSR2);
-// 	usleep(100);
-// }
 
 void	_send(char *message, int pid)
 {
@@ -78,7 +41,7 @@ void	_send(char *message, int pid)
     i = 0;
     while (message[i] != '\0')
     {
-		shift_that_char(message[i], pid);
+		shift(message[i], pid);
 		i++;
     }
 }

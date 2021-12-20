@@ -6,7 +6,7 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:03 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/09 12:16:19 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/20 11:45:07 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 static void	unshift_that_char(int num)
 {
 	static int i;
-    static char  byte;
+    static char byte;
 
-    if (num == SIGUSR1)
+    if (num == SIGUSR2)
     {
         (byte |= (0x80 >> i));
         i++;
@@ -31,6 +31,7 @@ static void	unshift_that_char(int num)
         byte = 0;
     }
 }
+
 
 int	main(int ac, char **av)
 {
