@@ -6,7 +6,7 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:51 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/20 11:34:12 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/22 17:52:38 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,34 +17,6 @@ void	ft_putchar_fd(char c, int fd)
 	write(fd, &c, 1);
 }
 
-void	shift(char c, int pid)
-{
-	int	bit;
-
-	bit = 0;
-	while (bit < 8)
-	{
-		if (c & 128)
-			kill(pid, SIGUSR2);
-		else
-			kill(pid, SIGUSR1);
-		c <<= 1;
-		bit++;
-		usleep(100);
-	}
-}
-
-void	_send(char *message, int pid)
-{
-	int	i;
-
-    i = 0;
-    while (message[i] != '\0')
-    {
-		shift(message[i], pid);
-		i++;
-    }
-}
 void	ft_putstr(char *str)
 {
 	if (!str)
@@ -53,7 +25,7 @@ void	ft_putstr(char *str)
 		write(1, str++, 1);
 }
 
-int		ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
 	long	res;
 	int		sign;

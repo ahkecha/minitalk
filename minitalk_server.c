@@ -6,48 +6,62 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:03 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/20 11:45:07 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/23 17:20:12 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static void	unshift_that_char(int num)
+void	unshift_that_char(int num, siginfo_t *inf, void *p)
 {
-	static int i;
-    static char byte;
+	static int	i;
+	static char	byte;
+	static int	curr_pid;
+	static int	cli_pid;
 
-    if (num == SIGUSR2)
-    {
-        (byte |= (0x80 >> i));
-        i++;
-    }
-    else
-        i++;
-    if (i == 8)
-    {
-        write(1, &byte, 1);
-        i = 0;
-        byte = 0;
-    }
+	(void)p;
+	if (!cli_pid)
+		cli_pid = inf->si_pid;
+	curr_pid = inf->si_pid;
+	if (cli_pid != curr_pid)
+	{
+		cli_pid = curr_pid;
+		byte = 0;
+		i = 0;
+	}
+	if (num == SIGUSR2)
+		(byte |= (0x80 >> i++));
+	else
+		i++;
+	if (i == 8)
+	{
+		write(1, &byte, 1);
+		i = 0;
+		byte = 0;
+	}
 }
-
 
 int	main(int ac, char **av)
 {
-	int	pid;
+	int					pid;
+	struct sigaction	ret;
 
 	(void)av;
 	pid = getpid();
-	if(ac == 1)
+	ret.sa_sigaction = unshift_that_char;
+	sigemptyset(&ret.sa_mask);
+	ret.sa_flags = SA_SIGINFO;
+	if (ac == 1)
 	{
 		ft_putstr("PID: ");
 		ft_putnbr_fd(pid, 1);
 		ft_putchar_fd('\n', 1);
-		signal(SIGUSR1, unshift_that_char);
-		signal(SIGUSR2, unshift_that_char);
-		while(1)
+		while (1)
+		{
+			sigaction(SIGUSR1, &ret, 0);
+			sigaction(SIGUSR2, &ret, 0);
 			pause();
+		}
 	}
-	exit(EXIT_SUCCESS);
+	exit(EXIT_FAILURE);
 }
