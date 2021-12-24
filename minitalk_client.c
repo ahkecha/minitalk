@@ -6,7 +6,7 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:13:48 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/22 17:52:02 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/24 17:47:14 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	shift(char c, int pid)
 	bit = 0;
 	while (bit < 8)
 	{
-		if (c & 128)
+		if (c & 0x80)
 			kill(pid, SIGUSR2);
 		else
 			kill(pid, SIGUSR1);

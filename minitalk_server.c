@@ -6,7 +6,7 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:03 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/23 17:20:12 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/24 17:49:00 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ int	main(int ac, char **av)
 	(void)av;
 	pid = getpid();
 	ret.sa_sigaction = unshift_that_char;
-	sigemptyset(&ret.sa_mask);
 	ret.sa_flags = SA_SIGINFO;
 	if (ac == 1)
 	{
