@@ -6,11 +6,18 @@
 /*   By: ahkecha <ahkecha@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/07 12:08:03 by ahkecha           #+#    #+#             */
-/*   Updated: 2021/12/24 17:49:00 by ahkecha          ###   ########.fr       */
+/*   Updated: 2021/12/27 15:42:25 by ahkecha          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+static void	reset(int *curr_pid, int *cli_pid, int *i, char *byte)
+{
+	*cli_pid = *curr_pid;
+	*byte = 0;
+	*i = 0;
+}
 
 void	unshift_that_char(int num, siginfo_t *inf, void *p)
 {
@@ -23,14 +30,13 @@ void	unshift_that_char(int num, siginfo_t *inf, void *p)
 	if (!cli_pid)
 		cli_pid = inf->si_pid;
 	curr_pid = inf->si_pid;
-	if (cli_pid != curr_pid)
-	{
-		cli_pid = curr_pid;
-		byte = 0;
-		i = 0;
-	}
+	if (curr_pid != cli_pid)
+		reset(&curr_pid, &cli_pid, &i, &byte);
 	if (num == SIGUSR2)
-		(byte |= (0x80 >> i++));
+	{
+		(byte |= (0x80 >> i));
+		i++;
+	}
 	else
 		i++;
 	if (i == 8)
