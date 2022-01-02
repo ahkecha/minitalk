@@ -25,7 +25,7 @@ void	shift(char c, int pid)
 			kill(pid, SIGUSR1);
 		c <<= 1;
 		bit++;
-		usleep(100);
+		usleep(500);
 	}
 }
 
